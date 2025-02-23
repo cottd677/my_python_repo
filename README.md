@@ -1,15 +1,54 @@
-# my_python_repo
-# creative coding python spring 2025
-this repo is where I store my projects made in Creative code in Python 
+import os
+import random
+import time
 
-# What I am learning
--Data Visualization 
--Live Coding 
--Python Drawing 
+"""
+In this program, the togglers start in a random column and move
+left or right.
+"""
 
-[mygithub](www.github.com] 
+DELAY = 0.05
+TOGGLER_DENSITY = 10
 
-![Mermaidimage](https://images.squarespace-cdn.com/content/v1/51bbfd3ce4b009e39661a96f/1582297982064-4PZSQ4XUS3TL3P36OS48/Depositphotos_59418375_m-2015.jpg)
+RIGHT_INCREMENT = 1  # Try changing this to a different integer.
+LEFT_INCREMENT = RIGHT_INCREMENT * -1
 
-resize an image- 
-<img src="project1/cat.jpg" width="100" alt= "cat wearing sunglasses"
+def main():
+    # -1 because Windows adds newlines if anything
+    # is printed in the rightmost column.
+    width = os.get_terminal_size()[0] - 1
+
+    columnChars = ['.'] * width
+    togglers = [] # Tuple of (x position, direction moving)
+
+    while True:
+        width = os.get_terminal_size()[0] - 1
+
+        if random.randint(0, 99) < TOGGLER_DENSITY:
+            # Add a new toggler
+            togglers.append([random.randint(0, width), random.choice((LEFT_INCREMENT, RIGHT_INCREMENT))])
+
+        # Remove out of bounds togglers:
+        for i in range(len(togglers) - 1, -1, -1):
+            if togglers[i][0] < 0 or togglers[i][0] >= width:
+                del togglers[i]
+
+        # Move the togglers and toggler the column chars:
+        for i in range(len(togglers)):
+            togglerPosition = togglers[i][0]
+            togglerDirection = togglers[i][1]
+
+            if columnChars[togglerPosition] == '.':
+                columnChars[togglerPosition] = '@'
+            else:
+                columnChars[togglerPosition] = '.'
+
+            togglers[i][0] += togglerDirection  # move the toggler
+
+        print(''.join(columnChars))
+        time.sleep(DELAY)
+
+try:
+    main()
+except KeyboardInterrupt:
+    print('Toggler 1, by Al Sweigart al@inventwithpython.com')
